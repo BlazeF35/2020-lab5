@@ -1,0 +1,31 @@
+div {
+    height: 200px;
+    border: 1px solid black;
+    background-image: url('../image/logo.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+p {
+    color: blue;
+    cursor: pointer;
+    border: 1px solid green;
+    display: inline; /* block */
+    font-family: 'Arial Narrow';
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+#myParagraph {
+    color: red;
+}
+
+.yellowText {
+    color: yellow;
+}
+
+span {
+    color: black;
+}
