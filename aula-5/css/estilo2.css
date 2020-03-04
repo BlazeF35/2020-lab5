@@ -1,0 +1,27 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+div {
+    border: 1px solid black;
+    float: left;
+}
+
+@media (max-width: 499px) {
+    div {
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+    div {
+        width: 50%;
+    }
+}
+
+@media (max-width: 2000px) {
+    div {
+        width: 33%;
+    }
+}

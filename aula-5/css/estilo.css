@@ -1,0 +1,54 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+div.container {
+    height: 150px;
+    width: 50px;
+    border: 1px solid black;
+    float: left;
+}
+
+#div3 {
+    clear: both;
+    width: 300px;
+}
+
+input[type="text"] {
+    padding: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    border: 2px solid blue;
+}
+
+#div3 p {
+    color: blue;
+}
+
+#div3 p:first-child {
+    background-color: red;
+}
+
+#div3 p:last-child {
+    background-color: green;
+}
+
+#div3 p:nth-child(2) {
+    background-color: yellow;
+}
+
+p::before {
+    content: '-->';
+}
+
+p::after {
+    content: '<--';
+}
+
+h1::first-letter {
+    color: yellow;
+}
+
