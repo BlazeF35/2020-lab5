@@ -8,20 +8,27 @@ div {
     float: left;
 }
 
-@media (max-width: 499px) {
-    div {
-        width: 100%;
-    }
-}
-
-@media (max-width: 650px) {
-    div {
-        width: 50%;
-    }
-}
-
 @media (max-width: 2000px) {
     div {
+        width: 24%;
+    }
+}
+
+@media (max-width: 1200px) {
+    div {
         width: 33%;
+    }
+}
+
+@media (max-width: 850px) {
+    div {
+        width:49%;
+    }
+}
+
+
+@media (max-width: 600px) {
+    div {
+        width: 100%;
     }
 }
