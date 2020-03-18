@@ -3,24 +3,36 @@
     <head>
         <title>Aula 7</title>
         <meta charset="utf-8">
+
+        <link rel="stylesheet" href="css/estilo.css" >
     </head>
     <body>
         <h1>Aula de JavaScript</h1>
 
         <form>
-            <label for="name">Nome</label>
-            <input type="text" id="name">
+            <div>
+                <label for="name">Nome</label>
+                <input type="text" id="name">
+            </div>
 
             <input type="button" id="saveBtn" value="Salvar">
 
-            <label for="firstNumber">A</label>
-            <input type="text" id="firstNumber">
+            <div>
+                <label for="firstNumber">A</label>
+                <input type="text" id="firstNumber">
+                <span id="firstNumberError" class="error hideMessage">Por favor, preencha o campo corretamente!</span>
+            </div>
             
-            <label for="secondNumber">B</label>
-            <input type="text" id="secondNumber">
+            <div>
+                <label for="secondNumber">B</label>
+                <input type="text" id="secondNumber">
+                <span id="secondNumberError" class="error hideMessage">Por favor, preencha o campo corretamente!</span>
+            </div>
             
-            <label for="result">C</label>
-            <input type="text" id="result">
+            <div>
+                <label for="result">C</label>
+                <input type="text" id="result">
+            </div>
             
             <input type="button" id="sumBtn" value="Somar">
         </form>
