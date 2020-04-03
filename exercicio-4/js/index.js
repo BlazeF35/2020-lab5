@@ -1,5 +1,6 @@
 let count = 0;
 start();
+clearButtonEvent();
 
 function start() {
     let spanElements = document.getElementsByTagName('span');
@@ -21,4 +22,22 @@ function appendSelectedNumbers(number) {
         p.innerHTML += ' -';
     }
     p.innerHTML += ' ' + number;
+}
+
+function clearButtonEvent() {
+    let clearButton = document.getElementById('reset');
+    clearButton.onclick = function() {
+        count = 0;
+        clearSelectedNumberArea();
+        let selectedElements = document.getElementsByClassName('selected');
+
+        Array.from(selectedElements).forEach(function(element) {
+            element.className = '';
+        });
+    };
+}
+
+function clearSelectedNumberArea() {
+    let p = document.getElementById('sorted');
+    p.innerHTML = '';
 }
