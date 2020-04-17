@@ -10,32 +10,28 @@ function start() {
 }
 
 function saveNewStudent() {
-    let inputName = document.getElementById('name');
-    let inputEmail = document.getElementById('email');
     let inputCpf = document.getElementById('cpf');
+    let inputs = createInputArray();
 
-    if (isAllFieldsValid(inputName, inputEmail, inputCpf) && isCpfNotDuplicated(inputCpf.value)) {
+    if (isAllFieldsValid(inputs) && isCpfNotDuplicated(inputCpf.value)) {
         
         if (lineIndexEditing === -1) {
             let newLine = createNewLine();
-            createNewTd(newLine, inputName.value);
-            createNewTd(newLine, inputEmail.value);
-            createNewTd(newLine, inputCpf.value);
+            createTds(newLine, inputs);
             createNewInputButton(newLine, 'Editar', editRow);
             createNewInputButton(newLine, 'Excluir', deleteRow);
             addNewRow(newLine);
         } else {
-            updateLineValues(inputName, inputEmail, inputCpf);
+            updateLineValues(inputs);
             lineIndexEditing = -1;
         }
         
-        clearFields(inputName, inputEmail, inputCpf);
+        clearFields(inputs);
     }
 }
 
 function isCpfNotDuplicated(novoCpf) {
-    let table = document.getElementById('alunos_cadastrados');
-    let tbody = table.tBodies[0];
+    let tbody = getTbody();
     
     for (let i = 0; i < tbody.childNodes.length; i++) {
         let tr = tbody.childNodes[i];
@@ -49,32 +45,32 @@ function isCpfNotDuplicated(novoCpf) {
     return true;
 }
 
-function clearFields(inputName, inputEmail, inputCpf) {
-    inputName.value = '';
-    inputEmail.value = '';
-    inputCpf.value = '';
+function clearFields(inputs) {
+    inputs.forEach(function(input) {
+        input.value = '';
+    });
 }
 
-function isAllFieldsValid(inputName, inputEmail, inputCpf) {
-    let isAllValid = true;
-    if (inputName.value.trim() === '') {
-        alert('Por favor preencha o campo nome');
-        isAllValid = false;
+function isAllFieldsValid(inputs) {
+    for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].value.trim() === '') {
+            alert('Por favor, preencha todos os campos!');
+            return false;
+        }
     }
-    if (inputEmail.value.trim() === '') {
-        alert('Por favor preencha o campo e-mail');
-        isAllValid = false;
-   }
-   if (inputCpf.value.trim() === '') {
-       alert('Por favor preencha o campo CPF');
-       isAllValid = false;
-   }
-   return isAllValid;
+
+    return true;
 }
 
 function createNewLine() {
     let newElement = document.createElement('tr');
     return newElement;
+}
+
+function createTds(row, inputs) {
+    inputs.forEach(function(input) {
+        createNewTd(row, input.value);
+    });
 }
 
 function createNewTd(row, content) {
@@ -84,8 +80,7 @@ function createNewTd(row, content) {
 }
 
 function addNewRow(newRow) {
-    let table = document.getElementById('alunos_cadastrados');
-    let tbody = table.tBodies[0];
+    let tbody = getTbody();
     tbody.appendChild(newRow);
 }
 
@@ -115,21 +110,33 @@ function editRow() {
     let tr = td.parentNode;
     lineIndexEditing = tr.rowIndex;
 
-    let inputName = document.getElementById('name');
-    let inputEmail = document.getElementById('email');
-    let inputCpf = document.getElementById('cpf');
+    let inputs = createInputArray();
 
-    inputName.value = tr.childNodes[0].innerHTML;
-    inputEmail.value = tr.childNodes[1].innerHTML;
-    inputCpf.value = tr.childNodes[2].innerHTML;
+    for (let i = 0; i < inputs.length; i++) {
+        inputs[i].value = tr.childNodes[i].innerHTML;
+    }
 }
 
-function updateLineValues(inputName, inputEmail, inputCpf) {
-    let table = document.getElementById('alunos_cadastrados');
-    let tbody = table.tBodies[0];
-    
+function updateLineValues(inputs) { 
+    let tbody = getTbody();
     let tr = tbody.childNodes[lineIndexEditing - 1];
-    tr.childNodes[0].innerHTML = inputName.value;
-    tr.childNodes[1].innerHTML = inputEmail.value;
-    tr.childNodes[2].innerHTML = inputCpf.value;
+
+    for (let i = 0; i < inputs.length; i++) {
+        tr.childNodes[i].innerHTML = inputs[i].value;
+    }
+}
+
+function getTbody() {
+    let table = document.getElementById('alunos_cadastrados');
+    return table.tBodies[0];
+}
+
+function createInputArray() {
+    let ids = ['name', 'email', 'cpf', 'telefone'];
+    let inputs = [];
+
+    ids.forEach(function (id) {
+        inputs.push(document.getElementById(id));
+    });
+    return inputs;
 }
