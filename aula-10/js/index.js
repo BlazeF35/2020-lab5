@@ -20,22 +20,31 @@ function saveNewStudent() {
         let student = createStudentObject(inputs);
         
         if (lineIndexEditing === -1) {
-            deleteEmptyLineMessage();
-            let newLine = createNewLine();
-            createTds(newLine, inputs);
-            createNewInputButton(newLine, 'Editar', editRow);
-            createNewInputButton(newLine, 'Excluir', deleteRow);
-            addNewRow(newLine);
             allStudents.push(student);
-
+            
         } else {
-            updateLineValues(inputs);
             updateAllStudentsList(student);
             lineIndexEditing = -1;
         }
-        
+        clearTable();
+        populateTable();
         clearFields(inputs);
     }
+}
+
+function populateTable() {
+    let tbody = getTbody();
+
+    allStudents.forEach(function(student) {
+        let newLine = createNewLine();
+        tbody.appendChild(newLine);
+        createNewTd(newLine, student.name);
+        createNewTd(newLine, student.email);
+        createNewTd(newLine, student.cpf);
+        createNewTd(newLine, student.telefone);
+        createNewInputButton(newLine, 'Editar', editRow);
+        createNewInputButton(newLine, 'Excluir', deleteRow);
+    });
 }
 
 function createStudentObject(inputs) {
@@ -49,17 +58,11 @@ function createStudentObject(inputs) {
 }
 
 function isCpfNotDuplicated(novoCpf) {
-    let tbody = getTbody();
-    
-    for (let i = 0; i < tbody.childNodes.length; i++) {
-        let tr = tbody.childNodes[i];
-        let td = tr.childNodes[2];
-        if (tr.id !== 'emptyLine' && td.innerHTML === novoCpf && tr.rowIndex !== lineIndexEditing) {
-            alert('Não pode ter CPF duplicado!');
-            return false;
-        }
+    let index = findStudentByCpf(novoCpf);
+    if (index > -1 && (lineIndexEditing === -1 || (lineIndexEditing - 1) !== index)) {
+        alert('Não pode ter CPF duplicado!');
+        return false;
     }
-
     return true;
 }
 
@@ -81,25 +84,13 @@ function isAllFieldsValid(inputs) {
 }
 
 function createNewLine() {
-    let newElement = document.createElement('tr');
-    return newElement;
-}
-
-function createTds(row, inputs) {
-    inputs.forEach(function(input) {
-        createNewTd(row, input.value);
-    });
+    return document.createElement('tr');
 }
 
 function createNewTd(row, content) {
     let newElement = document.createElement('td');
     newElement.innerHTML = content;
     row.appendChild(newElement);
-}
-
-function addNewRow(newRow) {
-    let tbody = getTbody();
-    tbody.appendChild(newRow);
 }
 
 function createNewInputButton(row, text, onclickMethodCallback) {
@@ -137,15 +128,6 @@ function editRow() {
     }
 }
 
-function updateLineValues(inputs) { 
-    let tbody = getTbody();
-    let tr = tbody.childNodes[lineIndexEditing - 1];
-
-    for (let i = 0; i < inputs.length; i++) {
-        tr.childNodes[i].innerHTML = inputs[i].value;
-    }
-}
-
 function getTbody() {
     let table = document.getElementById('alunos_cadastrados');
     return table.tBodies[0];
@@ -162,8 +144,8 @@ function createInputArray() {
 }
 
 function appendMessageEmptyTable() {
-    let tbody = getTbody();
-    if (tbody.childNodes.length === 0) {
+    if (allStudents.length === 0) {
+        let tbody = getTbody();
         let tr = createNewLine();
         tr.id = 'emptyLine';
         let td = document.createElement('td');
@@ -174,12 +156,9 @@ function appendMessageEmptyTable() {
     }
 }
 
-function deleteEmptyLineMessage() {
-    let tr = document.getElementById('emptyLine');
-    if (tr) {
-        let tbody = tr.parentNode;
-        tbody.removeChild(tr);
-    }
+function clearTable() {
+    let tbody = getTbody();
+    tbody.innerHTML = '';
 }
 
 function updateAllStudentsList(student) {
@@ -191,11 +170,10 @@ function updateAllStudentsList(student) {
 }
 
 function deleteStudentInArray(cpf) {
-    let index = allStudents.findIndex(function(element) {
-        return element.cpf === cpf;
-    });
+    let index = findStudentByCpf(cpf);
+    allStudents.splice(index, 1);
+}
 
-    if (index > -1) {
-        allStudents.splice(index, 1);
-    }
+function findStudentByCpf(cpf) {
+    return allStudents.findIndex(element => element.cpf === cpf);
 }
