@@ -1,10 +1,11 @@
 let lineIndexEditing = -1;
 let allStudents = [];
+const localStorageKey = 'student_list';
 
 start();
 
 function start() {
-    appendMessageEmptyTable();
+    loadOldData();
 
     let btn = document.getElementById('save');
     btn.onclick = function() {
@@ -20,22 +21,32 @@ function saveNewStudent() {
         let student = createStudentObject(inputs);
         
         if (lineIndexEditing === -1) {
-            deleteEmptyLineMessage();
-            let newLine = createNewLine();
-            createTds(newLine, inputs);
-            createNewInputButton(newLine, 'Editar', editRow);
-            createNewInputButton(newLine, 'Excluir', deleteRow);
-            addNewRow(newLine);
             allStudents.push(student);
-
+            
         } else {
-            updateLineValues(inputs);
             updateAllStudentsList(student);
             lineIndexEditing = -1;
         }
-        
+        clearTable();
+        populateTable();
         clearFields(inputs);
+        saveDataInLocalStorage();
     }
+}
+
+function populateTable() {
+    let tbody = getTbody();
+
+    allStudents.forEach(function(student) {
+        let newLine = createNewLine();
+        tbody.appendChild(newLine);
+        createNewTd(newLine, student.name);
+        createNewTd(newLine, student.email);
+        createNewTd(newLine, student.cpf);
+        createNewTd(newLine, student.telefone);
+        createNewInputButton(newLine, 'Editar', editRow);
+        createNewInputButton(newLine, 'Excluir', deleteRow);
+    });
 }
 
 function createStudentObject(inputs) {
@@ -49,17 +60,11 @@ function createStudentObject(inputs) {
 }
 
 function isCpfNotDuplicated(novoCpf) {
-    let tbody = getTbody();
-    
-    for (let i = 0; i < tbody.childNodes.length; i++) {
-        let tr = tbody.childNodes[i];
-        let td = tr.childNodes[2];
-        if (tr.id !== 'emptyLine' && td.innerHTML === novoCpf && tr.rowIndex !== lineIndexEditing) {
-            alert('Não pode ter CPF duplicado!');
-            return false;
-        }
+    let index = findStudentByCpf(novoCpf);
+    if (index > -1 && (lineIndexEditing === -1 || (lineIndexEditing - 1) !== index)) {
+        alert('Não pode ter CPF duplicado!');
+        return false;
     }
-
     return true;
 }
 
@@ -81,25 +86,13 @@ function isAllFieldsValid(inputs) {
 }
 
 function createNewLine() {
-    let newElement = document.createElement('tr');
-    return newElement;
-}
-
-function createTds(row, inputs) {
-    inputs.forEach(function(input) {
-        createNewTd(row, input.value);
-    });
+    return document.createElement('tr');
 }
 
 function createNewTd(row, content) {
     let newElement = document.createElement('td');
     newElement.innerHTML = content;
     row.appendChild(newElement);
-}
-
-function addNewRow(newRow) {
-    let tbody = getTbody();
-    tbody.appendChild(newRow);
 }
 
 function createNewInputButton(row, text, onclickMethodCallback) {
@@ -121,6 +114,7 @@ function deleteRow() {
         let tbody = tr.parentNode;
         tbody.removeChild(tr);
         deleteStudentInArray(tr.childNodes[2].innerHTML);
+        saveDataInLocalStorage();
         appendMessageEmptyTable();
     }
 }
@@ -134,15 +128,6 @@ function editRow() {
 
     for (let i = 0; i < inputs.length; i++) {
         inputs[i].value = tr.childNodes[i].innerHTML;
-    }
-}
-
-function updateLineValues(inputs) { 
-    let tbody = getTbody();
-    let tr = tbody.childNodes[lineIndexEditing - 1];
-
-    for (let i = 0; i < inputs.length; i++) {
-        tr.childNodes[i].innerHTML = inputs[i].value;
     }
 }
 
@@ -162,10 +147,9 @@ function createInputArray() {
 }
 
 function appendMessageEmptyTable() {
-    let tbody = getTbody();
-    if (tbody.childNodes.length === 0) {
+    if (allStudents.length === 0) {
+        let tbody = getTbody();
         let tr = createNewLine();
-        tr.id = 'emptyLine';
         let td = document.createElement('td');
         td.colSpan = 6;
         td.innerHTML = 'Nenhum aluno cadastro ainda!';
@@ -174,12 +158,9 @@ function appendMessageEmptyTable() {
     }
 }
 
-function deleteEmptyLineMessage() {
-    let tr = document.getElementById('emptyLine');
-    if (tr) {
-        let tbody = tr.parentNode;
-        tbody.removeChild(tr);
-    }
+function clearTable() {
+    let tbody = getTbody();
+    tbody.innerHTML = '';
 }
 
 function updateAllStudentsList(student) {
@@ -191,11 +172,25 @@ function updateAllStudentsList(student) {
 }
 
 function deleteStudentInArray(cpf) {
-    let index = allStudents.findIndex(function(element) {
-        return element.cpf === cpf;
-    });
+    let index = findStudentByCpf(cpf);
+    allStudents.splice(index, 1);
+}
 
-    if (index > -1) {
-        allStudents.splice(index, 1);
+function findStudentByCpf(cpf) {
+    return allStudents.findIndex(element => element.cpf === cpf);
+}
+
+function saveDataInLocalStorage() {
+    let dataString = JSON.stringify(allStudents);
+    localStorage.setItem(localStorageKey, dataString);
+}
+
+function loadOldData() {
+    let dataString = localStorage.getItem(localStorageKey);
+    if (dataString) {
+        allStudents = JSON.parse(dataString);
+        populateTable();
     }
+
+    appendMessageEmptyTable();
 }
