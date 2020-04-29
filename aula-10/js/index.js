@@ -120,6 +120,7 @@ function deleteRow() {
     if (confirm('Deseja remover o aluno(a) ' + name + '?')) {
         let tbody = tr.parentNode;
         tbody.removeChild(tr);
+        deleteStudentInArray(tr.childNodes[2].innerHTML);
         appendMessageEmptyTable();
     }
 }
@@ -187,4 +188,14 @@ function updateAllStudentsList(student) {
     oldStudent.email = student.email;
     oldStudent.cpf = student.cpf;
     oldStudent.telefone = student.telefone;
+}
+
+function deleteStudentInArray(cpf) {
+    let index = allStudents.findIndex(function(element) {
+        return element.cpf === cpf;
+    });
+
+    if (index > -1) {
+        allStudents.splice(index, 1);
+    }
 }
