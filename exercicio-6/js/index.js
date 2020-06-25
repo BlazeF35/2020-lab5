@@ -34,8 +34,8 @@ function addNewMateria(materia, nota) {
     td1.innerHTML = materia;
     let td2 = document.createElement('td');
     td2.innerHTML = nota;
-    tr.append(td1);
-    tr.append(td2);
+    tr.appendChild(td1);
+    tr.appendChild(td2);
     table.tBodies[0].appendChild(tr);
 }
 
