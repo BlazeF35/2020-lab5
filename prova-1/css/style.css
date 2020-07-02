@@ -1,0 +1,24 @@
+div.content {
+    width: 500px;
+    margin: 50px auto;
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+form input[type="number"],
+form input[type="password"] {
+    width: 95%;
+}
+
+form input[type="button"] {
+    display: block;
+    margin: 10px auto;
+}
+
+p.error {
+    color: red;
+}
+
+p.hide {
+    display: none;
+}
